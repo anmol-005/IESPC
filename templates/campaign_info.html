@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campaign Information</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='search_bg.jpg') }}");
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">SEARCH</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if user %}
+                        {% if user.role == 'influencer' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_dashboard') }}">Dashboard</a></li>
+                        {% elif user.role == 'sponsor' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_dashboard') }}">Dashboard</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>Campaign Information</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if campaign %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ campaign.name }}</h5>
+                    <p class="card-text"><strong>Description:</strong> {{ campaign.description }}</p>
+                    <p class="card-text"><strong>Budget:</strong> {{ campaign.budget }}</p>
+                    <p class="card-text"><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                    <p class="card-text"><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                    <p class="card-text"><strong>Visibility:</strong> {{ campaign.visibility }}</p>
+                    <p class="card-text"><strong>Niche:</strong> {{ campaign.niche }}</p>
+                    <p class="card-text"><strong>Goal:</strong> {{ campaign.goals }}</p>
+                </div>
+            </div>
+
+            {% if campaign.visibility == 'public' and campaign.ad_requests %}
+                <h2>Ad Requests</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Requirements</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for ad_request in campaign.ad_requests %}
+                            {% if ad_request.status == 'created' %}
+                                <tr>
+                                    <td>{{ ad_request.requirements }}</td>
+                                    <td>{{ ad_request.payment_amount }}</td>
+                                    <td>
+                                        {% if ad_request.can_request %}
+                                            {% if ad_request.influencer_id == session.user_id %}
+                                                <span>Request Sent</span>
+                                            {% else %}
+                                                {% if session.user_role == 'influencer' %}
+                                                    <form action="{{ url_for('campaign_info', campaign_id=campaign.id) }}" method="POST" style="display:inline;">
+                                                        <input type="hidden" name="request_id" value="{{ ad_request.id }}">
+                                                        <button type="submit" class="btn btn-primary">Request</button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% else %}
+                                            <span>Requests Closed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    
+                    </tbody>
+                </table>
+            {% endif %}
+        {% else %}
+            <p>No campaign found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+ 

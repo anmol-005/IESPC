@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Ad Requests</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url("static/admin_bg.avif");
+            background-size: cover;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 2px solid #171616;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">ADMIN</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_campaigns') }}">Campaigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_ad_requests') }}">Ad Requests</a>
+                    </li> 
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Ad Requests</h1>
+        
+        <section>
+            <h3>Created Ad Requests</h3>
+            {% if created_ad_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Visibility</th>
+                            <th>Requirements</th>
+                            <th>Status</th>
+                            <th>Payment Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad_request, campaign in created_ad_requests %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ campaign.visibility }}</td>
+                                <td>{{ ad_request.requirements }}</td>
+                                <td>{{ ad_request.status }}</td>
+                                <td>{{ ad_request.payment_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No ad requests.</p>
+            {% endif %}
+        </section>
+        
+        <section>
+            <h3>Existing Ad Requests</h3>
+            {% if ad_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Visibility</th>
+                            <th>Requirements</th>
+                            <th>Status</th>
+                            <th>Payment Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad_request, campaign in ad_requests %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ campaign.visibility }}</td>
+                                <td>{{ ad_request.requirements }}</td>
+                                <td>{{ ad_request.status }}</td>
+                                <td>{{ ad_request.payment_amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No ad requests.</p>
+            {% endif %}
+        </section>
+        
+
+        <section>
+            <h3>Completed Ad Requests</h3>
+            {% if completed_ad_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Influencer Name</th>
+                            <th>Requirements</th>
+                            <th>Payment Amount</th>
+                            <th>Verification Link</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad_request, campaign , influencer in completed_ad_requests %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ influencer.name }}</td>
+                                <td>{{ ad_request.requirements }}</td>
+                                <td>{{ ad_request.payment_amount }}</td>
+                                <td>
+                                    {% if ad_request.verification_link %}
+                                        <a target="_blank">{{ ad_request.verification_link }}</a>
+                                    {% else %}
+                                        <span>No link provided</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ad_request.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No completed ad requests.</p>
+            {% endif %}
+        </section>
+
+        <section>
+            <h3>Expired Ad Requests</h3>
+            {% if expired_ad_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Requirements</th>
+                            <th>Payment Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad_request, campaign , influencer in expired_ad_requests %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ ad_request.requirements }}</td>
+                                <td>{{ ad_request.payment_amount }}</td>
+                                <td>{{ ad_request.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No expired ad requests.</p>
+            {% endif %}
+        </section>
+
+    </main>
+</body>
+</html>

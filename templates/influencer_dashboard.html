@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Influencer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("static/influencer_bg.avif");
+            background-size: cover;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #111111;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">INFLUENCER</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('influencer_profile') }}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('influencer_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('influencer_completed_ad_requests') }}">Completed Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Welcome, {{ user.name }}</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %} 
+
+        <section>
+            <h2>Active Ad Requests</h2>
+            {% if active_ad_requests %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Requirements</th>
+                            <th>Payment Amount</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Verification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad_request, campaign in active_ad_requests %}
+                            <tr>
+                                <td>{{ campaign.name }}</td>
+                                <td>{{ ad_request.requirements }}</td>
+                                <td>{{ ad_request.payment_amount }}</td>
+                                <td>{{ campaign.end_date }}</td>
+                                <td>{{ ad_request.status }}</td>
+                                <td>
+                                    {% if ad_request.status == 'active' %}
+                                        {% if not ad_request.verification_link %}
+                                            <form action="{{ url_for('submit_verification_link', ad_request_id=ad_request.id) }}" method="post" style="display:inline;">
+                                                <input type="text" name="verification_link" placeholder="Enter verification link" required>
+                                                <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                                            </form>
+                                        {% else %}
+                                            <p>Link submitted: {{ ad_request.verification_link }}</p>
+                                        {% endif %}
+                                        {% if ad_request.verification_link %}
+                                            <form action="{{ url_for('mark_complete', ad_request_id=ad_request.id) }}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-success">Mark Complete</button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No active ad requests.</p>
+            {% endif %}
+        </section>
+        
+        
+        
+
+        <section>
+            <h2>Sent Ad Requests (Public Campaigns)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Payment Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ad_request, campaign in sent_ad_requests_public %}
+                        <tr>
+                            <td>{{ campaign.name }}</td>
+                            <td>{{ ad_request.payment_amount }}</td>
+                            <td>{{ ad_request.status }}</td>
+                            <td>
+                                {% if ad_request.status == 'pending' %}
+                                    <form action="{{ url_for('cancel_ad_request', ad_request_id=ad_request.id) }}" method="post" style="display:inline;">
+                                        <button type="submit">Cancel</button>
+                                    </form>
+                                {% elif ad_request.status == 'accepted' %}
+                                    <span>Accepted</span>
+                                {% elif ad_request.status == 'rejected' %}
+                                    <span>Rejected</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Received Ad Requests (Private Campaigns)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Payment Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ad_request, campaign in received_ad_requests_private %}
+                        <tr>
+                            <td>{{ campaign.name }}</td>
+                            <td>{{ ad_request.payment_amount }}</td>
+                            <td>{{ ad_request.status }}</td>
+                            <td>
+                                {% if ad_request.status == 'pending' %}
+                                    <form action="{{ url_for('accept_ad_request', ad_request_id=ad_request.id) }}" method="post" style="display:inline;">
+                                        <button type="submit">Accept</button>
+                                    </form>
+                                    <form action="{{ url_for('reject_ad_request', ad_request_id=ad_request.id) }}" method="post" style="display:inline;">
+                                        <button type="submit">Reject</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>        
+    </main>
+</body>
+</html>

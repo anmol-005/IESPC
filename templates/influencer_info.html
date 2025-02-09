@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Influencer Information</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='search_bg.jpg') }}");
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">SEARCH</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if user %}
+                        {% if user.role == 'influencer' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_dashboard') }}">Dashboard</a></li>
+                        {% elif user.role == 'sponsor' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_dashboard') }}">Dashboard</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>Influencer Information</h1>
+        {% if influencer %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Category</th>
+                        <th>Niche</th>
+                        <th>Reach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ influencer.name }}</td>
+                        <td>{{ influencer.email }}</td>
+                        <td>{{ influencer.category }}</td>
+                        <td>{{ influencer.niche }}</td>
+                        <td>{{ influencer.reach }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% else %}
+            <p>No influencer found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Campaigns</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url("static/admin_bg.avif");
+            background-size: cover;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 2px solid #171616;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">ADMIN</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_campaigns') }}">Campaigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_ad_requests') }}">Ad Requests</a>
+                    </li> 
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Campaigns</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Visibility</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Flagged</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in campaigns %}
+                    <tr>
+                        <td>{{ campaign.id }}</td>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.visibility }}</td>
+                        <td>{{ campaign.start_date }}</td>
+                        <td>{{ campaign.end_date }}</td>
+                        <td>{{ 'Yes' if campaign.flagged else 'No' }}</td>
+                        <td>
+                            {% if campaign.flagged %}
+                                <form action="{{ url_for('unflag_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-success">Unflag</button>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('flag_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning">Flag</button>
+                                </form>
+                            {% endif %}
+                            <form action="{{ url_for('admin_delete_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url("static/admin_bg.avif");
+            background-size: cover;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .stat {
+            flex: 1 1 200px;
+            margin: 10px;
+            padding: 20px;
+            border: 1px solid #141313;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .flagged-table {
+            margin-top: 20px;
+        }
+        .flagged-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .flagged-table th, .flagged-table td {
+            padding: 8px;
+            border: 1px solid #1b1a1a;
+            text-align: left;
+        }
+        .flagged-table th {
+            background-color: #f9efef;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">ADMIN</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_campaigns') }}">Campaigns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_ad_requests') }}">Ad Requests</a>
+                    </li> 
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container">
+        <h1>Admin Dashboard</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="stats">
+            <div class="stat">
+                <h3>Total Users</h3>
+                <p>{{ user_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Total Sponsors</h3>
+                <p>{{ sponsors_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Total Influencers</h3>
+                <p>{{ influencers_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Active Campaigns</h3>
+                <p>{{ active_campaigns_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Completed Campaigns</h3>
+                <p>{{ previous_campaigns_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Public Campaigns</h3>
+                <p>{{ public_campaigns_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Private Campaigns</h3>
+                <p>{{ private_campaigns_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Total Ad Requests</h3>
+                <p>{{ ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Created Ad Requests</h3>
+                <p>{{ created_ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Pending Ad Requests</h3>
+                <p>{{ pending_ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Active Ad Requests</h3>
+                <p>{{ active_ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Completed Ad Requests</h3>
+                <p>{{ completed_ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Rejected Ad Requests</h3>
+                <p>{{ rejected_ad_requests_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Flagged Sponsors</h3>
+                <p>{{ flagged_sponsors_count }}</p>
+            </div>
+            <div class="stat">
+                <h3>Flagged Influencers</h3>
+                <p>{{ flagged_influencers_count }}</p>
+            </div>
+        </div>
+
+        <div class="flagged-table">
+            <h2>Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Flagged</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                {% if user.role == 'influencer' %}
+                                    {{ user.name }}
+                                {% elif user.role == 'sponsor' %}
+                                    {{ user.company_name }}
+                                {% else %}
+                                    {{ user.name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role }}</td>
+                            <td>{{ 'Yes' if user.flagged else 'No' }}</td>
+                            <td>
+                                {% if not user.flagged %}
+                                    <form action="{{ url_for('flag_user', user_id=user.id) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger">Flag</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ url_for('unflag_user', user_id=user.id) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-success">Unflag</button>
+                                    </form>
+                                {% endif %}
+                                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flagged-table">
+            <h2>Campaigns</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Visibility</th>
+                        <th>Budget</th>
+                        <th>Sponsor</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user , campaign in campaigns %}
+                        <tr>
+                            <td>{{ campaign.id }}</td>
+                            <td>{{ campaign.name }}</td>
+                            <td>{{ campaign.description }}</td>
+                            <td>{{ campaign.visibility }}</td>
+                            <td>{{ campaign.budget }}</td>
+                            <td>{{ user.company_name }}</td>
+                            <td>
+                                {% if campaign.flagged %}
+                                    <form action="{{ url_for('unflag_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-success">Unflag</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{{ url_for('flag_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-warning">Flag</button>
+                                    </form>
+                                {% endif %}
+                                <form action="{{ url_for('admin_delete_campaign', campaign_id=campaign.id) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
+
+
+
+

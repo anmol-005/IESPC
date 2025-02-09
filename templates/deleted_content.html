@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Engagement Platform</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .features, .testimonials, .contact {
+            margin-top: 50px;
+        }
+        .features h2, .testimonials h2, .contact h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .feature, .testimonial {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .feature img, .testimonial img {
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .feature p, .testimonial p {
+            font-size: 1em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Influencer Engagement and Sponsorship Coordination Platform</h1>
+        <p>It's a platform to connect Sponsors and Influencers so that sponsors can get their product/service advertised and influencers can get monetary benefit.</p>
+        <a href="{{ url_for('login') }}" class="button">Get Started</a>
+    </div>
+
+    <div class="container features">
+        <h2>Features</h2>
+        <div class="feature">
+            <img src="https://via.placeholder.com/50" alt="Feature 1">
+            <p>Seamless integration with social media platforms for easy influencer marketing.</p>
+        </div>
+        <div class="feature">
+            <img src="https://via.placeholder.com/50" alt="Feature 2">
+            <p>Detailed analytics to measure campaign performance and ROI.</p>
+        </div>
+        <div class="feature">
+            <img src="https://via.placeholder.com/50" alt="Feature 3">
+            <p>Secure payment gateway to ensure timely payments to influencers.</p>
+        </div>
+    </div>
+
+    <div class="container testimonials">
+        <h2>Testimonials</h2>
+        <div class="testimonial">
+            <img src="https://via.placeholder.com/50" alt="Testimonial 1">
+            <p>"This platform has revolutionized our marketing strategy. We've seen tremendous growth in brand awareness." - Sponsor A</p>
+        </div>
+        <div class="testimonial">
+            <img src="https://via.placeholder.com/50" alt="Testimonial 2">
+            <p>"As an influencer, I've found more collaboration opportunities than ever before." - Influencer B</p>
+        </div>
+    </div>
+
+    <div class="container contact">
+        <h2>Contact Us</h2>
+        <p>If you have any questions or need assistance, please feel free to contact us at support@influencerplatform.com or call us at (123) 456-7890.</p>
+    </div>
+</body>
+</html>

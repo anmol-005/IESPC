@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("static/search_bg.jpg");
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">SEARCH</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if user %}
+                        {% if user.role == 'influencer' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_dashboard') }}">Dashboard</a></li>
+                        {% elif user.role == 'sponsor' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_dashboard') }}">Dashboard</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    {% if user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+
+    <!-- <header>
+        <div class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Search</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user %}
+                        {% if user.role == 'influencer' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('influencer_dashboard') }}">Dashboard</a></li>
+                        {% elif user.role == 'sponsor' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_profile') }}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('sponsor_dashboard') }}">Dashboard</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </header> -->
+    <main class="container">
+        <h1>Search for Campaigns and Influencers</h1>
+        <main class="main-content">
+            <section>
+                <h3>Search Campaigns</h3>
+                <form action="{{ url_for('search_campaigns') }}" method="get">
+                    <input type="text" name="campaign_query" placeholder="Search Campaigns" value="{{ request.args.get('query', '') }}">
+                    <input type="text" name="campaign_niche" placeholder="Niche" value="{{ request.args.get('niche', '') }}">
+                    <input type="number" name="budget" placeholder="Minimum Budget" value="{{ request.args.get('budget', '') }}">
+                    <button type="submit">Search</button>
+                </form>
+                {% if campaigns %}
+                    <ul>
+                        {% for campaign in campaigns %}
+                            <li>
+                                {{ campaign.name }}
+                                <a href="{{ url_for('campaign_info', campaign_id=campaign.id) }}">Get Info</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+
+            <section>
+                <h3>Search Influencers</h3>
+                <form action="{{ url_for('search_influencers') }}" method="get">
+                    <input type="text" name="influencer_query" placeholder="Username" value="{{ request.args.get('query', '') }}">
+                    <input type="text" name="category" placeholder="Category" value="{{ request.args.get('category', '') }}">
+                    <input type="text" name="influencer_niche" placeholder="Niche" value="{{ request.args.get('niche', '') }}">
+                    <input type="number" name="min_reach" placeholder="Minimum Reach" value="{{ request.args.get('min_reach', '') }}">
+                    <button type="submit">Search</button>
+                </form>
+                {% if influencers %}
+                    <ul>
+                        {% for influencer in influencers %}
+                            <li>
+                                {{ influencer.name }}
+                                <a href="{{ url_for('influencer_info', influencer_id=influencer.id) }}">Get Info</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+
+        </main>
+    </main>
+</body>
+</html>
+
+

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url("static/background.webp");
+            background-size: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .login-container input[type="email"],
+        .login-container input[type="password"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-container input[type="submit"] {
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .login-container .options {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .login-container .options a {
+            text-decoration: none;
+            color: #007BFF;
+            margin-top: 10px;
+        }
+        .login-container .options a:hover {
+            text-decoration: underline;
+        }
+        .login-container .options label {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <label>
+                <input type="checkbox" name="remember"> Remember me
+            </label>
+            <input type="submit" value="Login">
+        </form>
+        <div class="options">
+            <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+            <a href="{{ url_for('influencer_signup') }}">Sign up as Influencer</a>
+            <a href="{{ url_for('sponsor_signup') }}">Sign up as Sponsor</a>
+            <a href="{{ url_for('admin_login') }}" style="align-self: flex-right;">Admin login</a>
+            
+        </div>
+    </div>
+</body>
+</html>
