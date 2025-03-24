@@ -81,6 +81,74 @@ class AdRequest(db.Model):
         UniqueConstraint('campaign_id', 'influencer_id', name='unique_campaign_influencer'),
     )
 
+def seed_data():
+    """ Seed initial data into the database """
+    with app.app_context():
+        db.create_all()  # Ensure tables exist
+
+        # Add admin user
+        if not User.query.filter_by(email='admin@example.com').first():
+            admin = User(email='admin@example.com', password='Admin@123', role='admin')
+            db.session.add(admin)
+
+        # Add demo influencer
+        if not User.query.filter_by(email='influencer@example.com').first():
+            demo_influencer = User(
+                email='influencer@example.com',
+                password='Demo@123',
+                role='influencer',
+                name='Demo Influencer',
+                category='Tech',
+                niche='Gadgets',
+                reach=10000
+            )
+            db.session.add(demo_influencer)
+
+        # Add demo sponsor
+        if not User.query.filter_by(email='sponsor@example.com').first():
+            demo_sponsor = User(
+                email='sponsor@example.com',
+                password='Demo@123',
+                role='sponsor',
+                company_name='Demo Company',
+                industry='E-commerce',
+                budget=5000
+            )
+            db.session.add(demo_sponsor)
+
+        # Add a sample campaign
+        if not Campaign.query.filter_by(name="Demo Campaign").first():
+            demo_campaign = Campaign(
+                name="Demo Campaign",
+                description="Test campaign for demo purposes",
+                start_date=datetime(2025, 1, 1),
+                end_date=datetime(2025, 12, 31),
+                budget=1500,
+                visibility="public",
+                goals="Increase brand awareness",
+                sponsor_id=demo_sponsor.id,
+                niche="Tech"
+            )
+            db.session.add(demo_campaign)
+
+        # Add a sample ad request
+        if not AdRequest.query.filter_by(influencer_id=demo_influencer.id).first():
+            demo_ad_request = AdRequest(
+                campaign_id=demo_campaign.id,
+                influencer_id=demo_influencer.id,
+                requirements="Create a product review video",
+                payment_amount=200,
+                status="pending"
+            )
+            db.session.add(demo_ad_request)
+
+        db.session.commit()
+        print("Demo data seeded successfully!")
+
+# 🌟 Call the seeding function on app startup
+with app.app_context():
+    seed_data()
+
 @app.route('/')
 def index():
     return render_template('index.html')
