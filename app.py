@@ -90,9 +90,11 @@ def seed_data():
         if not User.query.filter_by(email='admin@example.com').first():
             admin = User(email='admin@example.com', password='Admin@123', role='admin')
             db.session.add(admin)
+            db.session.commit()
 
         # Add demo influencer
-        if not User.query.filter_by(email='influencer@example.com').first():
+        demo_influencer = User.query.filter_by(email='influencer@example.com').first()
+        if not demo_influencer:
             demo_influencer = User(
                 email='influencer@example.com',
                 password='Demo@123',
@@ -103,9 +105,11 @@ def seed_data():
                 reach=10000
             )
             db.session.add(demo_influencer)
+            db.session.commit()  # 💡 Commit here to ensure influencer exists in DB
 
         # Add demo sponsor
-        if not User.query.filter_by(email='sponsor@example.com').first():
+        demo_sponsor = User.query.filter_by(email='sponsor@example.com').first()
+        if not demo_sponsor:
             demo_sponsor = User(
                 email='sponsor@example.com',
                 password='Demo@123',
@@ -115,9 +119,11 @@ def seed_data():
                 budget=5000
             )
             db.session.add(demo_sponsor)
+            db.session.commit()  # 💡 Commit to ensure sponsor exists in DB
 
         # Add a sample campaign
-        if not Campaign.query.filter_by(name="Demo Campaign").first():
+        demo_campaign = Campaign.query.filter_by(name="Demo Campaign").first()
+        if not demo_campaign:
             demo_campaign = Campaign(
                 name="Demo Campaign",
                 description="Test campaign for demo purposes",
@@ -130,6 +136,7 @@ def seed_data():
                 niche="Tech"
             )
             db.session.add(demo_campaign)
+            db.session.commit()  # 💡 Commit to persist campaign
 
         # Add a sample ad request
         if not AdRequest.query.filter_by(influencer_id=demo_influencer.id).first():
@@ -141,11 +148,10 @@ def seed_data():
                 status="pending"
             )
             db.session.add(demo_ad_request)
+            db.session.commit()  # 💡 Commit to persist ad request
 
-        db.session.commit()
         print("Demo data seeded successfully!")
 
-# 🌟 Call the seeding function on app startup
 with app.app_context():
     seed_data()
 
