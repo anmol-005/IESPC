@@ -1,3 +1,4 @@
+import os
 from flask import Flask , request , render_template , redirect , url_for , flash , session
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy import UniqueConstraint , or_ , and_
@@ -1230,7 +1231,8 @@ def logout():
 if __name__ == "__main__": 
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=True)
 
 
 
