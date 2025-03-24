@@ -291,7 +291,7 @@ def sponsor_signup():
         allowed_domains = ["@gmail.com", "@hotmail.com", "@yahoo.com"]
         if not any(email.endswith(domain) for domain in allowed_domains):
             flash('Email must be from a valid domain (e.g., @gmail.com, @hotmail.com, @yahoo.com).', 'danger')
-            return redirect(url_for('influencer_signup'))
+            return redirect(url_for('sponsor_signup'))
         
         def validate_password(password):
             if len(password) < 8:
@@ -317,7 +317,7 @@ def sponsor_signup():
         is_valid_password, password_error = validate_password(password)
         if not is_valid_password:
             flash(password_error, 'danger')
-            return redirect(url_for('influencer_signup'))
+            return redirect(url_for('sponsor_signup'))
 
         if password != retype_password:
             flash('Passwords do not match!', 'danger')
