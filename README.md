@@ -61,13 +61,14 @@ The application uses three primary tables:
 ## 🏃 Setup Instructions
 
 ### 1️⃣ Clone the Repository
-```
+```bash
 git clone <your-repo-url>
 cd <project-folder>
 ```
 
 ### 2️⃣ Set Up a Virtual Environment (Recommended)
-```python -m venv venv
+```bash
+python -m venv venv
 
 # On Windows
 venv\Scripts\activate
@@ -77,12 +78,14 @@ source venv/bin/activate
 ```
 
 ### 3️⃣ Install Dependencies
-```pip install flask flask-sqlalchemy sqlalchemy
+```bash
+pip install flask flask-sqlalchemy sqlalchemy
 
 ```
 
 ### 4️⃣ Run the Application
-```python app.py
+```bash
+python app.py
 
 ```
 
