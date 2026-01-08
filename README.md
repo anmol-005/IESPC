@@ -77,13 +77,24 @@ source venv/bin/activate
 ```
 
 ### 3️⃣ Install Dependencies
-```pip install flask flask-sqlalchemy sqlalchemy```
+```pip install flask flask-sqlalchemy sqlalchemy
+```
 
 ### 4️⃣ Run the Application
-```python app.py```
+```python app.py
+```
 
 The application will automatically seed demo data on the first run and start on:
 http://127.0.0.1:10000
+
+### 🔑 Demo Credentials
+The following accounts are automatically created via the seed_data() function:
+```| Role       | Email                                                   | Password  |
+| ---------- | ------------------------------------------------------- | --------- |
+| Admin      | [admin@example.com](mailto:admin@example.com)           | Admin@123 |
+| Sponsor    | [sponsor@example.com](mailto:sponsor@example.com)       | Demo@123  |
+| Influencer | [influencer@example.com](mailto:influencer@example.com) | Demo@123  |
+```
 
 ### 📁 Project Structure
 ```.
