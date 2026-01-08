@@ -78,10 +78,12 @@ source venv/bin/activate
 
 ### 3️⃣ Install Dependencies
 ```pip install flask flask-sqlalchemy sqlalchemy
+
 ```
 
 ### 4️⃣ Run the Application
 ```python app.py
+
 ```
 
 The application will automatically seed demo data on the first run and start on:
